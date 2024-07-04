@@ -1,0 +1,48 @@
+apiVersion: batch.gresearch.co.uk/v1
+kind: ControlledJob
+metadata:
+  name: controlledjob-sample-nostart
+spec:
+  timezone:
+    name: "GMT"
+  events:
+    - action: "stop"
+      schedule:
+        timeOfDay: "23:00"
+        daysOfWeek: "MON-FRI"
+        
+  restartStrategy:
+    specChangePolicy: Recreate
+      
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            foo: "bar"
+        spec:
+          securityContext:
+            fsGroup: 1000 
+            runAsUser: 1000
+          containers:
+          - name: hello
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - |
+              while true
+              do
+                date
+                echo "Hello from the Kubernetes cluster"
+                sleep 5
+              done
+            
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 100m
+                memory: 256Mi
+          restartPolicy: OnFailure

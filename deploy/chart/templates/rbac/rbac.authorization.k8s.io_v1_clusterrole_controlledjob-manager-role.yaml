@@ -1,0 +1,58 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: controlledjob-manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - jobs/status
+  verbs:
+  - get
+- apiGroups:
+  - batch.gresearch.co.uk
+  resources:
+  - controlledjobs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - batch.gresearch.co.uk
+  resources:
+  - controlledjobs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - batch.gresearch.co.uk
+  resources:
+  - controlledjobs/status
+  verbs:
+  - get
+  - patch
+  - update
+{{- end -}}

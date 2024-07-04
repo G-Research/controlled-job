@@ -1,0 +1,54 @@
+apiVersion: batch.gresearch.co.uk/v1
+kind: ControlledJob
+metadata:
+  name: controlledjob-sample-slow-start
+spec:
+  timezone:
+    name: "GMT"
+  events:
+    # - action: "start"
+    #   schedule:
+    #     timeOfDay: "00:00"
+    #     daysOfWeek: "MON-FRI"
+    - action: "stop"
+      schedule:
+        timeOfDay: "23:59"
+        daysOfWeek: "MON-FRI"
+
+  restartStrategy:
+    specChangePolicy: Recreate
+      
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            foo: "bar"
+        spec:
+          securityContext:
+            fsGroup: 1000 
+            runAsUser: 1000
+          containers:
+          - name: hello
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - |
+              # Script that simulates a service that takes a while to shutdown
+              exit_script() {
+                  echo "Received signal to stop. Delaying for 30s"
+                  sleep 30
+                  trap - INT TERM # clear the trap
+                  kill -- -$$ # Sends SIGTERM to child/sub processes
+              }
+
+              trap exit_script INT TERM
+
+              while true
+              do
+                date
+                echo "Hello from the Kubernetes cluster"
+                sleep 5
+              done
+          restartPolicy: OnFailure

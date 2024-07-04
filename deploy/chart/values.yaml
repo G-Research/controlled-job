@@ -1,0 +1,65 @@
+
+namespace:
+  create: true
+  name: controlled-job-operator
+  extraLabels: {}
+    # e.g.
+    # foo: bar
+
+serviceAccount:
+  create: true
+  name: controlled-job-operator  
+  extraLabels: {}
+
+crd:
+  create: true
+
+rbac:
+  create: true
+  clusterRoleBinding:
+    create: true
+    name: controlledjob-manager
+
+deployment:
+  image:
+    repository: gresearch/controlled-job
+    tag: 1.0.0
+
+  replicas: 1
+
+  resources:
+    limits:
+      cpu: 4
+      memory: 3Gi
+
+  # Optional: if set, this url will be called at creation time for each job
+  # with the new job manifest and should act like a K8s mutating webhook, and return 
+  # a json patch which will be used to mutate the Job before it's created in K8s
+  # NOTE: this is an opt-in feature for each ControlledJob resource, by setting the
+  # batch.gresearch.co.uk/apply-mutations annotation to true
+  # jobAdmissionWebhookUrl: https://path-to-service.svc:9443/endpoint
+
+  extraLabels: {}
+    # e.g.
+    # foo: bar
+
+  extraEnv: []
+    # e.g.
+    # - name: FOO
+    #   value: bar
+
+  extraVolumes: []
+    # e.g.
+    # - name: "my-volume"
+    #   emptyDir: {}
+
+  extraVolumeMounts: []
+    # e.g.
+    # - mountPath: "/mnt/foo"
+    #   name: my-volume
+
+
+service:
+  extraLabels: {}
+    # e.g
+    # foo: bar

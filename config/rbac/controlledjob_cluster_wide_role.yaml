@@ -1,0 +1,35 @@
+# permissions for the operator to watch and view controlledjobs and jobs at the cluster scope
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: controlledjob-cluster-wide-role
+rules:
+- apiGroups:
+  - batch.gresearch.co.uk
+  resources:
+  - controlledjobs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch.gresearch.co.uk
+  resources:
+  - controlledjobs/status
+  verbs:
+  - get
+
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - jobs/status
+  verbs:
+  - get

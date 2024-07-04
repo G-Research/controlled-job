@@ -1,0 +1,6 @@
+resources:
+- role.yaml
+- controlledjob_editor_role.yaml
+- controlledjob_viewer_role.yaml
+- controlledjob_admin_role.yaml
+- controlledjob_cluster_wide_role.yaml

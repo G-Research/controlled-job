@@ -1,0 +1,21 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: controlledjob-viewer-role
+rules:
+- apiGroups:
+  - batch.gresearch.co.uk
+  resources:
+  - controlledjobs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - batch.gresearch.co.uk
+  resources:
+  - controlledjobs/status
+  verbs:
+  - get
+{{- end -}}

@@ -1,0 +1,16 @@
+domain: gresearch.co.uk
+layout:
+- go.kubebuilder.io/v3
+projectName: k8s-operator-go
+repo: github.com/G-Research/controlled-job
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: gresearch.co.uk
+  group: batch
+  kind: ControlledJob
+  path: github.com/G-Research/controlled-job/api/v1
+  version: v1
+version: "3"
