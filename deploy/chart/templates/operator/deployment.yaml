@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
 metadata:
-  name: {{ include "controlled-job.fullname" . }}
+  name: {{ printf "%s-operator" (include "controlled-job.fullname" .) }}
   namespace: {{ .Values.namespace.name }}
   labels:
     {{- include "controlled-job.labels" . | nindent 4 }}
