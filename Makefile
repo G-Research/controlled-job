@@ -43,6 +43,9 @@ all: build
 
 ##@ Development
 
+.PHONY: install-tools
+install-tools: $(CONTROLLER_GEN) $(MOQ) ; $(info $(call M,$@…))
+
 .PHONY: manifests
 manifests: $(SRC) $(CONTROLLER_GEN) mod ; $(info $(call M,$@…))
 	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=controlledjob-manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
@@ -60,6 +63,9 @@ fmt: $(SRC) $(GENERATED_SRC) ; $(info $(call M,$@…))
 .PHONY: vet
 vet: $(SRC) $(GENERATED_SRC) ; $(info $(call M,$@…))
 	go vet ./...
+
+.PHONY: go-format
+go-format: fmt vet
 
 .PHONY: mod
 mod: go.mod ; $(info $(call M,$@…))
