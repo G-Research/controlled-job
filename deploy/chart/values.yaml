@@ -31,6 +31,24 @@ deployment:
     limits:
       cpu: 4
       memory: 3Gi
+  
+  # Override any settings of the readiness or liveness probes as desired
+  readinessProbe:
+    failureThreshold: 8
+    httpGet:
+      path: /readyz
+      port: 5000
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    timeoutSeconds: 15
+  livenessProbe: 
+    failureThreshold: 8
+    httpGet:
+      path: /healthz
+      port: 5000
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    timeoutSeconds: 15
 
   # Optional: if set, this url will be called at creation time for each job
   # with the new job manifest and should act like a K8s mutating webhook, and return 
@@ -38,6 +56,12 @@ deployment:
   # NOTE: this is an opt-in feature for each ControlledJob resource, by setting the
   # batch.gresearch.co.uk/apply-mutations annotation to true
   # jobAdmissionWebhookUrl: https://path-to-service.svc:9443/endpoint
+
+  # If you need a different set of labels to use as selector labels (to link a deployment to its pods, and a service to the pods)
+  # set them here
+  # overrideSelectorLabels:
+    # e.g.
+    # foo: bar
 
   extraLabels: {}
     # e.g.

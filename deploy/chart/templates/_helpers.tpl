@@ -54,6 +54,10 @@ Common labels
 Selector labels
 */}}
 {{- define "controlled-job.selectorLabels" -}}
+{{- if .Values.deployment.overrideSelectorLabels -}}
+{{- toYaml .Values.deployment.overrideSelectorLabels | indent 0 -}}
+{{- else -}}
 app.kubernetes.io/name: {{ include "controlled-job.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
 {{- end -}}

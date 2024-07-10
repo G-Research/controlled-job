@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-metadata:
   name: {{ printf "%s-operator" (include "controlled-job.fullname" .) }}
   namespace: {{ .Values.namespace.name }}
   labels:
@@ -39,22 +38,14 @@ spec:
             name: metrics
             protocol: TCP
         terminationMessagePolicy: "FallbackToLogsOnError"
-        readinessProbe: 
-          failureThreshold: 8
-          httpGet:
-            path: /readyz
-            port: 5000
-          initialDelaySeconds: 30
-          periodSeconds: 15
-          timeoutSeconds: 15
-        livenessProbe: 
-          failureThreshold: 8
-          httpGet:
-            path: /healthz
-            port: 5000
-          initialDelaySeconds: 30
-          periodSeconds: 15
-          timeoutSeconds: 15
+        {{- with .Values.deployment.readinessProbe }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.deployment.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         securityContext: 
           runAsUser: 1000
         {{- with .Values.deployment.resources }}
