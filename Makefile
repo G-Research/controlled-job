@@ -3,7 +3,7 @@ M = $(shell if [ "$$(tput colors 2> /dev/null || echo 0)" -ge 8 ]; then printf "
 
 CRD_OPTIONS ?= "crd:generateEmbeddedObjectMeta=true"
 
-CONTROLLER_RUNTIME_URL ?= https://github.com/kubernetes-sigs/controller-runtime
+CONTROLLER_RUNTIME_URL ?= https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime
 REGISTRY ?= gresearch
 OPERATOR_IMAGE ?= $(REGISTRY)/controlled-job-operator
 TAG := $(shell date +%Y%m%d.%H%M%S)
@@ -20,15 +20,6 @@ SRC := $(shell find . -type f -name '*.go' -o -path './hack/*' -not -path "./ven
 GENERATED_SRC := $(sort ./api/v1/zz_generated.deepcopy.go $(shell find . -type f -name '*.go' -not -path "./vendor/*" | xargs grep -l "^// Code generated .* DO NOT EDIT\."))
 
 # Tools
-GOBIN = $(shell go env GOBIN)
-CONTROLLER_GEN = $(GOBIN)/controller-gen
-MOQ = $(GOBIN)/moq
-
-$(CONTROLLER_GEN): ; $(info $(call M,Installing $@…))
-	go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.15.0
-
-$(MOQ): ; $(info $(call M,Installing $@…))
-	go install github.com/matryer/moq@v0.3.4
 
 # Work out out absolute path
 PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -44,16 +35,17 @@ all: build
 ##@ Development
 
 .PHONY: install-tools
-install-tools: $(CONTROLLER_GEN) $(MOQ) ; $(info $(call M,$@…))
+install-tools: ; $(info $(call M,$@…))
+	go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.15.0
+	go install github.com/matryer/moq@v0.3.4
 
 .PHONY: manifests
-manifests: $(SRC) $(CONTROLLER_GEN) mod ; $(info $(call M,$@…))
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) rbac:roleName=controlledjob-manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+manifests: $(SRC) mod install-tools ; $(info $(call M,$@…))
+	controller-gen $(CRD_OPTIONS) rbac:roleName=controlledjob-manager-role webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 
 .PHONY: generate
-GENERATE_TOOLS = $(MOQ)
-generate: $(SRC) $(CONTROLLER_GEN) $(GENERATE_TOOLS) ; $(info $(call M,$@…))
-	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
+generate: $(SRC) install-tools ; $(info $(call M,$@…))
+	controller-gen object:headerFile="hack/boilerplate.go.txt" paths="./..."
 	go generate ./...
 
 .PHONY: fmt
