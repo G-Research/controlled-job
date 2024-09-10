@@ -10,6 +10,7 @@ A `ControlledJob` is a resource which specifies:
 During the specified schedule, the `controlled-job-operator` will ensure that a `Job` object with a matching spec exists, and when the schedule says to stop, the `Job` is deleted.
 
 Features:
+
 - Control over what happens when the `JobSpec` specification on the `ControlledJob` changes while a `Job` is currently running. Either stop the old `Job` and start a new one with the new spec, or ignore it until the next scheduled run
 - The ability to override the schedule manually. If a `Job` is manually created with the correct metadata, it will become managed by the matching `ControlledJob`. This allows use cases where the starting of a `Job` depends on external conditions (the successfuly completion of a batch job to prepare data for the Job perhaps) or when there's a need to start a `Job` earlier one day for some reason, but we still want the ongoing monitoring, restarting, and stopping to be handled according to the schedule
 - Strong guarantees about exclusive running of the `Job`. If a `Job` is restarted for any reason, the `controlled-job-operator` will start it in a suspended state, and only unsuspend it when it's sure any previous `Job` can no longer be running.
@@ -62,6 +63,24 @@ spec:
 ```
 
 ## Developer guide
+
 This operator is built on the standard [`controller-runtime` library](https://github.com/kubernetes-sigs/controller-runtime) using [Kubebuilder](https://book.kubebuilder.io/) and so should be familiar to anyone used to developing K8s controllers.
 
 The main logic lives under [pkg/reconciliation](pkg/reconciliation) which is a good place to start reading.
+
+## Contributing
+
+We welcome bug fixes, issue reports, and documation improvements, however feature requests or additions are generally not in scope. Please open an issue to discuss any potential feature work and read our [contributing guide](CONTRIBUTING.md) for more details on how to contribute.
+
+## Community Guidelines
+
+Please read our [code of conduct](CODE_OF_CONDUCT.md) before participating in or [contributing guide](CONTRIBUTING.md) to this project.
+
+## Security
+
+Please see our [security policy](SECURITY.md) for details on reporting security vulnerabilities.
+
+## License
+
+ControlledJob is licensed under the [Apache Software License 2.0](LICENSE) (Apache-2.0)
+SPDX-License-Identifier: Apache-2.0
