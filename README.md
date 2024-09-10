@@ -70,7 +70,7 @@ The main logic lives under [pkg/reconciliation](pkg/reconciliation) which is a g
 
 ## Contributing
 
-Please read our [contributing guide](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md) if you'd like to contribute to the project.
+We welcome bug fixes, issue reports, and documation improvements, however feature requests or additions are generally not in scope. Please open an issue to discuss any potential feature work and read our [contributing guide](CONTRIBUTING.md) for more details on how to contribute.
 
 ## Community Guidelines
 
